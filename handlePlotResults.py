@@ -11,6 +11,8 @@ module containing functionality for plotting CASH optimisation results
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay #plot_confusion_matrix
+
 
 def plot_opt_in_time(trials):
     fig,ax=plt.subplots()
@@ -115,3 +117,18 @@ def scatterbox(trials,stat='fusion_accs',ylower=0,yupper=1,showplot=True):
     if showplot:
         plt.show()
     return fig
+
+def confmat(y_true,y_pred,labels,modelname="",testset="",title=""):
+    '''y_true = actual classes, y_pred = predicted classes,
+    labels = names of class labels'''
+    #https://scikit-learn.org/0.22/modules/generated/sklearn.metrics.ConfusionMatrixDisplay.html#sklearn.metrics.ConfusionMatrixDisplay
+    #https://scikit-learn.org/0.22/modules/generated/sklearn.metrics.plot_confusion_matrix.html#sklearn.metrics.plot_confusion_matrix
+    conf=confusion_matrix(y_true,y_pred,labels=labels,normalize='true')
+    cm=ConfusionMatrixDisplay(conf,labels)
+    #cm=ConfusionMatrixDisplay.from_predictions(y_true,y_pred,labels,normalise=None) #only in skl 1.2
+    if modelname != "" and testset != "":
+        title=modelname+'\n'+testset
+    fig,ax=plt.subplots()
+    ax.set_title(title)
+    cm.plot(ax=ax)
+    #return conf

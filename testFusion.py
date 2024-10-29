@@ -10,13 +10,10 @@ import os
 import sys
 import numpy as np
 import statistics as stats
-import handleDatawrangle as wrangle
 import handleFeats as feats
 import handleML as ml
-import handleComposeDataset as comp
-import handleTrainTestPipeline as tt
 import handleFusion as fusion
-from handlePlotResults import plot_opt_in_time, plot_stat_in_time, plot_stat_as_line, plot_multiple_stats, calc_runningbest, plot_multiple_stats_with_best, plot_multi_runbest_df, boxplot_param, scatterbox
+from handlePlotResults import plot_opt_in_time, plot_stat_in_time, plot_multiple_stats, calc_runningbest, plot_multiple_stats_with_best, boxplot_param, scatterbox, confmat
 import params
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename, askopenfilenames, askdirectory, asksaveasfilename
@@ -266,9 +263,9 @@ def classes_from_preds(targets,predlist_emg,predlist_eeg,predlist_fusion,classla
 
 def plot_confmats(gest_truth,gest_pred_emg,gest_pred_eeg,gest_pred_fusion,gesturelabels):
     '''Produce confusion matrix'''
-    tt.confmat(gest_truth,gest_pred_emg,gesturelabels)
-    tt.confmat(gest_truth,gest_pred_eeg,gesturelabels)
-    tt.confmat(gest_truth,gest_pred_fusion,gesturelabels)
+    confmat(gest_truth,gest_pred_emg,gesturelabels)
+    confmat(gest_truth,gest_pred_eeg,gesturelabels)
+    confmat(gest_truth,gest_pred_fusion,gesturelabels)
 
 def train_models_opt(emg_train_set,eeg_train_set,args):
     emg_model_type=args['emg']['emg_model_type']
@@ -1124,9 +1121,9 @@ def function_fuse_LOO(args):
                 
         if args['plot_confmats']:
             gesturelabels=[params.idx_to_gestures[label] for label in classlabels]
-            tt.confmat(gest_truth,gest_pred_eeg,gesturelabels,title='EEG')
-            tt.confmat(gest_truth,gest_pred_emg,gesturelabels,title='EMG')
-            tt.confmat(gest_truth,gest_pred_fusion,gesturelabels,title='Fusion')
+            confmat(gest_truth,gest_pred_eeg,gesturelabels,title='EEG')
+            confmat(gest_truth,gest_pred_emg,gesturelabels,title='EMG')
+            confmat(gest_truth,gest_pred_fusion,gesturelabels,title='Fusion')
             
         emg_accs.append(accuracy_score(gest_truth,gest_pred_emg))
         eeg_accs.append(accuracy_score(gest_truth,gest_pred_eeg))
@@ -1287,9 +1284,9 @@ def function_fuse_withinppt(args):
                 
         if args['plot_confmats']:
             gesturelabels=[params.idx_to_gestures[label] for label in classlabels]
-            tt.confmat(gest_truth,gest_pred_eeg,gesturelabels,title='EEG')
-            tt.confmat(gest_truth,gest_pred_emg,gesturelabels,title='EMG')
-            tt.confmat(gest_truth,gest_pred_fusion,gesturelabels,title='Fusion')
+            confmat(gest_truth,gest_pred_eeg,gesturelabels,title='EEG')
+            confmat(gest_truth,gest_pred_emg,gesturelabels,title='EMG')
+            confmat(gest_truth,gest_pred_fusion,gesturelabels,title='Fusion')
             
         emg_accs.append(accuracy_score(gest_truth,gest_pred_emg))
         eeg_accs.append(accuracy_score(gest_truth,gest_pred_eeg))
