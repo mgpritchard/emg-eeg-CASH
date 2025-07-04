@@ -124,8 +124,10 @@ def confmat(y_true,y_pred,labels,modelname="",testset="",title=""):
     #https://scikit-learn.org/0.22/modules/generated/sklearn.metrics.ConfusionMatrixDisplay.html#sklearn.metrics.ConfusionMatrixDisplay
     #https://scikit-learn.org/0.22/modules/generated/sklearn.metrics.plot_confusion_matrix.html#sklearn.metrics.plot_confusion_matrix
     conf=confusion_matrix(y_true,y_pred,labels=labels,normalize='true')
-    cm=ConfusionMatrixDisplay(conf,labels)
-    #cm=ConfusionMatrixDisplay.from_predictions(y_true,y_pred,labels,normalise=None) #only in skl 1.2
+    cm=ConfusionMatrixDisplay(conf,display_labels=labels)
+    # the above changes in skl 0.23, ONE VERSION after that which the code was written in!
+    # display_labels is no longer the second positional argument, but a named argument at the end
+    #cm=ConfusionMatrixDisplay.from_predictions(y_true,y_pred,labels=labels,normalise=None) #only in skl 1.2
     if modelname != "" and testset != "":
         title=modelname+'\n'+testset
     fig,ax=plt.subplots()
