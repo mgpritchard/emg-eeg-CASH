@@ -423,8 +423,12 @@ def fusion_hierarchical(emg_others,eeg_others,emg_ppt,eeg_ppt,args):
         idx=int(eeg_ppt['ID_pptID'].iloc[0])-1
         sel_cols_eeg=[ml.drop_ID_cols(eeg_others).columns.get_loc(col) for col in args['eeg_feats_LOO'].iloc[idx].tolist()]
     
-    random_split=random.randint(0,100)
-    folds=StratifiedKFold(random_state=random_split,n_splits=3,shuffle=False)
+    #random_split=random.randint(0,100)
+    #folds=StratifiedKFold(random_state=random_split,n_splits=3,shuffle=False)
+    #previously in sklearn 0.22, shuffle=False meant no shuffling, and random_state was therefore unused
+    #now in sklearn 1.6ish, we will get an error if we try to pass in a random_state while shuffle=false
+    #therefore we must instead set random_state to none
+    folds=StratifiedKFold(random_state=None,n_splits=3,shuffle=False)
     eeg_preds_hierarch= []
     for i, (index_ML, index_Fus) in enumerate(folds.split(eeg_others,eeg_others['ID_splitIndex'])):
         eeg_train_split_ML=eeg_others.iloc[index_ML]
@@ -547,8 +551,12 @@ def fusion_hierarchical_inv(emg_others,eeg_others,emg_ppt,eeg_ppt,args):
         idx=int(emg_ppt['ID_pptID'].iloc[0])-1
         sel_cols_emg=[ml.drop_ID_cols(emg_others).columns.get_loc(col) for col in args['emg_feats_LOO'].iloc[idx].tolist()]
 	
-    random_split=random.randint(0,100)
-    folds=StratifiedKFold(random_state=random_split,n_splits=3,shuffle=False)
+    #random_split=random.randint(0,100)
+    #folds=StratifiedKFold(random_state=random_split,n_splits=3,shuffle=False)
+    #previously in sklearn 0.22, shuffle=False meant no shuffling, and random_state was therefore unused
+    #now in sklearn 1.6ish, we will get an error if we try to pass in a random_state while shuffle=false
+    #therefore we must instead set random_state to none
+    folds=StratifiedKFold(random_state=None,n_splits=3,shuffle=False)
     emg_preds_hierarch= []
     for i, (index_ML, index_Fus) in enumerate(folds.split(emg_others,emg_others['ID_splitIndex'])):
 	
@@ -811,8 +819,12 @@ def fusion_metamodel(emg_train, eeg_train, emg_test, eeg_test, args):
         sel_cols_eeg=[ml.drop_ID_cols(eeg_train).columns.get_loc(col) for col in args['eeg_feats_LOO'].iloc[idx].tolist()]
         sel_cols_emg=[ml.drop_ID_cols(emg_train).columns.get_loc(col) for col in args['emg_feats_LOO'].iloc[idx].tolist()]
     
-    random_split=random.randint(0,100)
-    folds=StratifiedKFold(random_state=random_split,n_splits=3,shuffle=False)
+    #random_split=random.randint(0,100)
+    #folds=StratifiedKFold(random_state=random_split,n_splits=3,shuffle=False)
+    #previously in sklearn 0.22, shuffle=False meant no shuffling, and random_state was therefore unused
+    #now in sklearn 1.6ish, we will get an error if we try to pass in a random_state while shuffle=false
+    #therefore we must instead set random_state to none
+    folds=StratifiedKFold(random_state=None,n_splits=3,shuffle=False)
     fustargets=[]
     fusdistros_emg=[]
     fusdistros_eeg=[]
@@ -1190,12 +1202,12 @@ def function_fuse_withinppt(args):
         
         emg_ppt,eeg_ppt = sort_harmonise_data(emg_ppt,eeg_ppt)
         
-        if not emg_ppt['ID_stratID'].equals(eeg_ppt['ID_stratID']):
-            raise ValueError('EMG & EEG performances misaligned')
-        
         eeg_ppt['ID_stratID']=eeg_ppt['ID_run'].astype(str)+eeg_ppt['Label'].astype(str)+eeg_ppt['ID_gestrep'].astype(str)
         emg_ppt['ID_stratID']=emg_ppt['ID_run'].astype(str)+emg_ppt['Label'].astype(str)+emg_ppt['ID_gestrep'].astype(str)
-
+	
+        if not emg_ppt['ID_stratID'].equals(eeg_ppt['ID_stratID']):
+            raise ValueError('EMG & EEG performances misaligned')
+	
         random_split=random.randint(0,100)
         
         gest_perfs=emg_ppt['ID_stratID'].unique()
